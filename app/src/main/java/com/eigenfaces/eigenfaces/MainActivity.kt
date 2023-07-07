@@ -3,6 +3,7 @@ package com.eigenfaces.eigenfaces
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import org.jetbrains.kotlinx.multik.api.toNDArray
 import java.util.Scanner
 
 
@@ -24,6 +25,7 @@ class MainActivity : AppCompatActivity() {
             }
             row++
         }
+        array.toNDArray()
         Log.i("STREAM_TAG", (System.currentTimeMillis() - start).toString())
         istream.close()
         scanner.close()
