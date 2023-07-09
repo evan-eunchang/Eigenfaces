@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'androidx.navigation.safeargs'
 }
 
 android {
@@ -30,13 +31,24 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-}
-
-repositories {
-    //mavenCentral()
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
+
+    // ViewModel
+    def lifecycle_version = "2.6.1"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+    // LiveData
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
+
+    //setting up fragments
+    def nav_version = "2.6.0"
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+
     //multik
     implementation "org.jetbrains.kotlinx:multik-core:0.2.2"
     implementation "org.jetbrains.kotlinx:multik-kotlin:0.2.2"
