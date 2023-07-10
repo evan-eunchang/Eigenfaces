@@ -5,10 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class MainActivityViewModel : ViewModel() {
-    var inputBitmap = MutableLiveData<Bitmap>()
+    lateinit var faceBitmap: Bitmap
 
-
-    fun setInputBitmap(input : Bitmap) {
-        inputBitmap.value = input
-    }
 }
