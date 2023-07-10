@@ -144,6 +144,7 @@ class MyImageView : AppCompatImageView {
         //Log.i("BITMAP_TAG", "Y: " + mPosY.toString())
         mImage = BitmapDrawable(resources, bm)
         mImage!!.setBounds(0, 0, mImage!!.intrinsicWidth, mImage!!.intrinsicHeight)
+
     }
 
 
@@ -153,7 +154,7 @@ class MyImageView : AppCompatImageView {
             mScaleFactor *= detector.scaleFactor
 
             mScaleFactor = (mScaleFactor.coerceAtMost(10.0f)).coerceAtLeast(minScaleFactor)
-
+            invalidate()
             return true
         }
     }

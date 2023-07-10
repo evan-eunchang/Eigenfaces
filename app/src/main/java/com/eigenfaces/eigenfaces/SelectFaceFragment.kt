@@ -3,6 +3,7 @@ package com.eigenfaces.eigenfaces
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.graphics.Paint
@@ -50,7 +51,12 @@ class SelectFaceFragment : Fragment() {
 
         binding.btnCalculate.setOnClickListener {
             val preppedBitmap = captureBitmap()
-            mainActivityViewModel.setInputBitmap(preppedBitmap)
+//            val faceArray = IntArray(10304)
+//            preppedBitmap.getPixels(faceArray, 0, preppedBitmap.width, 0, 0, preppedBitmap.width, preppedBitmap.height)
+//            for (i in faceArray.indices) {
+//                faceArray[i] = Color.red(faceArray[i])
+//            }
+            mainActivityViewModel.faceBitmap = preppedBitmap
             it.findNavController().navigate(R.id.action_selectFaceFragment_to_displayResultsFragment)
         }
 
