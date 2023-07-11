@@ -2,16 +2,17 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'androidx.navigation.safeargs'
+    id 'kotlin-kapt'
 }
 
 android {
     namespace 'com.eigenfaces.eigenfaces'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.eigenfaces.eigenfaces"
         minSdk 27
-        targetSdk 33
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
@@ -25,11 +26,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = JavaVersion.VERSION_17
     }
     buildFeatures {
         viewBinding = true
@@ -37,6 +38,8 @@ android {
 }
 
 dependencies {
+    implementation 'androidx.core:core-ktx:+'
+
 
     // ViewModel
     def lifecycle_version = "2.6.1"
@@ -49,9 +52,19 @@ dependencies {
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 
+    // Coroutines
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.2"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.2"
+
     //multik
     implementation "org.jetbrains.kotlinx:multik-core:0.2.2"
     implementation "org.jetbrains.kotlinx:multik-kotlin:0.2.2"
+
+    //room
+    def room_version = "2.5.2"
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
+    implementation "androidx.room:room-ktx:$room_version"
 
     implementation 'androidx.core:core-ktx:1.8.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'

@@ -9,6 +9,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import com.eigenfaces.eigenfaces.databinding.FragmentDisplayResultsBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.jetbrains.kotlinx.multik.api.Multik
 import org.jetbrains.kotlinx.multik.api.ndarray
 import org.jetbrains.kotlinx.multik.api.toNDArray
@@ -34,8 +37,10 @@ class DisplayResultsFragment : Fragment() {
     ): View {
         binding = FragmentDisplayResultsBinding.inflate(inflater, container, false)
         binding.ivInput.setImageBitmap(mainActivityViewModel.faceBitmap)
-        val faceMatrix = loadFaceToAnalyze()
-        val avgFace = loadAvgFaces()
+        CoroutineScope(Dispatchers.IO).launch {
+            val faceMatrix = loadFaceToAnalyze()
+            val avgFace = loadAvgFaces()
+        }
         return binding.root
     }
 
