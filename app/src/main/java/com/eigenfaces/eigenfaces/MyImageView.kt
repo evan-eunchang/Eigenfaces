@@ -11,6 +11,7 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.graphics.drawable.toBitmap
 
 
 class MyImageView : AppCompatImageView {
@@ -31,9 +32,11 @@ class MyImageView : AppCompatImageView {
 
 
     constructor(context : Context, attrs : AttributeSet) : this(context, attrs, 0) {
-        //Log.i("CONSTRUCTORTAG", "constructed!")
-        mImage = resources.getDrawable(R.drawable.ic_launcher_background, context.theme)
+        mImage = resources.getDrawable(R.drawable.example_face, context.theme)
         mImage!!.setBounds(0, 0, mImage!!.intrinsicWidth, mImage!!.intrinsicHeight)
+        minScaleFactor = (super.getWidth().toFloat() / mImage!!.intrinsicWidth.toFloat()).coerceAtLeast(
+            super.getHeight().toFloat() / mImage!!.intrinsicHeight.toFloat())
+        mScaleFactor = minScaleFactor
     }
 
     constructor(context : Context, attrs: AttributeSet?, defStyle : Int) : super(context, attrs, defStyle) {

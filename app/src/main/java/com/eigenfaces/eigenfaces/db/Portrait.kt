@@ -3,6 +3,7 @@ package com.eigenfaces.eigenfaces.db
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import org.jetbrains.kotlinx.multik.ndarray.data.D1Array
 
 @Entity(tableName = "portrait_data_table")
 data class Portrait(

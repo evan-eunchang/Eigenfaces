@@ -5,13 +5,13 @@
     android:id="@+id/ConstraintLayoutSelectFace"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SelectFaceFragment" >
+    android:background="#000000"
+    tools:context=".SelectFaceFragment">
 
     <com.eigenfaces.eigenfaces.MyImageView
         android:id="@+id/ivPortrait"
         android:layout_width="276dp"
         android:layout_height="336dp"
-        android:src="@drawable/eigenface_logo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
@@ -28,6 +28,7 @@
         android:textAlignment="center"
         android:textSize="30sp"
         android:textStyle="bold"
+        app:cornerRadius="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -44,6 +45,7 @@
         android:textSize="30sp"
         android:textStyle="bold"
         android:visibility="invisible"
+        app:cornerRadius="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"

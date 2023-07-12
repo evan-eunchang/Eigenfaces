@@ -8,6 +8,7 @@ import kotlinx.coroutines.launch
 
 class PortraitViewModel(private val dao : PortraitDao) : ViewModel() {
     val students = dao.getAllStudents()
+    val count = dao.getCount()
 
     fun insertStudent(portrait : Portrait) = viewModelScope.launch {
         dao.insertPortrait(portrait)
