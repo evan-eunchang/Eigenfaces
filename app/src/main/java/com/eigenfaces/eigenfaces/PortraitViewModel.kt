@@ -7,18 +7,18 @@ import com.eigenfaces.eigenfaces.db.PortraitDao
 import kotlinx.coroutines.launch
 
 class PortraitViewModel(private val dao : PortraitDao) : ViewModel() {
-    val students = dao.getAllStudents()
+    val portraits = dao.getAllStudents()
     val count = dao.getCount()
 
-    fun insertStudent(portrait : Portrait) = viewModelScope.launch {
+    fun insertPortrait(portrait : Portrait) = viewModelScope.launch {
         dao.insertPortrait(portrait)
     }
 
-    fun updateStudent(portrait : Portrait) = viewModelScope.launch {
+    fun updatePortrait(portrait : Portrait) = viewModelScope.launch {
         dao.updatePortrait(portrait)
     }
 
-    fun deleteStudent(portrait : Portrait) = viewModelScope.launch {
+    fun deletePortrait(portrait : Portrait) = viewModelScope.launch {
         dao.deletePortrait(portrait)
     }
 }
