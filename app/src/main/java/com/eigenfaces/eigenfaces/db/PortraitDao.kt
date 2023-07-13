@@ -22,5 +22,5 @@ interface PortraitDao {
     fun getAllStudents(): LiveData<List<Portrait>>
 
     @Query("SELECT COUNT(portrait_id) FROM portrait_data_table")
-    fun getCount() : LiveData<Int>
+    fun getCount() : Int
 }

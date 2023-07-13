@@ -22,6 +22,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.eigenfaces.eigenfaces.databinding.FragmentSelectFaceBinding
+import com.eigenfaces.eigenfaces.db.PortraitDatabase
 
 
 class SelectFaceFragment : Fragment() {
@@ -37,6 +38,9 @@ class SelectFaceFragment : Fragment() {
     }
     }
     private val mainActivityViewModel by activityViewModels<MainActivityViewModel>()
+//    private val portraitViewModel by activityViewModels<PortraitViewModel> {
+//        PortraitViewModelFactory((activity as MainActivity).dao!!)
+//    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

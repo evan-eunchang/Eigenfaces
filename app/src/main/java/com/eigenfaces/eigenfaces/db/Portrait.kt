@@ -12,8 +12,8 @@ data class Portrait(
     var id : Int,
     @ColumnInfo(name = "portrait_name")
     var name : String,
-    @ColumnInfo(name = "portrait_file_path")
-    var filePath : String,
+    @ColumnInfo(name = "portrait_file_name")
+    var fileName : String,
     @ColumnInfo(name = "portrait_coordinates")
     var coordinates : String
 )
