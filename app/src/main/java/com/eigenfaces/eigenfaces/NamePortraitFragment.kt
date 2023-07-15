@@ -8,6 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.eigenfaces.eigenfaces.databinding.FragmentNamePortraitBinding
@@ -36,10 +39,24 @@ class NamePortraitFragment : Fragment() {
                     Portrait(0, binding.etName.text.toString(),
                         mainActivityViewModel.fileNameToSave, mainActivityViewModel.coordinatesToSave)
                 )
+                portraitViewModel.count.observe(viewLifecycleOwner) {
+                    Log.i("ROOM_TAG", "Portrait inserted. Count = $it")
+                }
                 view?.findNavController()?.navigate(R.id.action_namePortraitFragment_to_welcomeFragment)
             }
         }
         return binding.root
+    }
+
+    private fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observer<T>) {
+        observe(lifecycleOwner, object : Observer<T> {
+
+            override fun onChanged(value: T) {
+                observer.onChanged(value)
+                removeObserver(this)
+            }
+
+        })
     }
 
 }

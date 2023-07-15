@@ -19,8 +19,8 @@ interface PortraitDao {
     suspend fun deletePortrait(portrait : Portrait)
 
     @Query("SELECT * FROM portrait_data_table")
-    fun getAllStudents(): LiveData<List<Portrait>>
+    fun getAllPortraits(): LiveData<List<Portrait>>
 
-    @Query("SELECT COUNT(portrait_id) FROM portrait_data_table")
-    fun getCount() : Int
+    @Query("SELECT COUNT(*) FROM portrait_data_table")
+    fun getCount() : LiveData<Int>
 }

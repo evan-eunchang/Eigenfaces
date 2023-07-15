@@ -10,13 +10,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import com.eigenfaces.eigenfaces.databinding.FragmentDisplayResultsBinding
 import com.eigenfaces.eigenfaces.db.Portrait
-import com.eigenfaces.eigenfaces.db.PortraitDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jetbrains.kotlinx.multik.api.Multik
@@ -43,36 +45,33 @@ class DisplayResultsFragment : Fragment() {
     }
     private lateinit var closestMatch : Portrait
     private lateinit var coordinates : D1Array<Float>
+    private lateinit var job : Job
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentDisplayResultsBinding.inflate(inflater, container, false)
-        if (MainActivity.dao == null) {
-            Log.i("ROOM_TAG", "DAO is NULL")
-        }
         binding.ivInput.setImageBitmap(mainActivityViewModel.faceBitmap)
 
-        val start = System.currentTimeMillis()
-        CoroutineScope(Dispatchers.IO).launch {
+        job = CoroutineScope(Dispatchers.IO).launch {
+//            Log.i("ROOM_TAG", portraitViewModel.count.toString())
             val faceNoAvg = loadFaceToAnalyze() - loadAvgFaces()
             coordinates = getCoordinates(faceNoAvg)
-            if (portraitViewModel.count == 0) {
-                Log.i("ROOM_TAG", "Database is empty: " + portraitViewModel.count.toString())
-                mainActivityViewModel.coordinatesToSave = ndArrayToString(coordinates)
-                mainActivityViewModel.fileNameToSave = savePortraitImage()
-                withContext(Dispatchers.Main) {
-                    view?.findNavController()
-                        ?.navigate(R.id.action_displayResultsFragment_to_namePortraitFragment)
+            withContext(Dispatchers.Main){
+                portraitViewModel.portraits.observeOnce(viewLifecycleOwner) { portraits ->
+                    if (portraits.isEmpty()) {
+                        mainActivityViewModel.coordinatesToSave = ndArrayToString(coordinates)
+                        mainActivityViewModel.fileNameToSave = savePortraitImage()
+                        view?.findNavController()
+                            ?.navigate(R.id.action_displayResultsFragment_to_namePortraitFragment)
+                        job.cancel()
+                    } else {
+                        Log.i("ROOM_TAG", portraits.size.toString())
+                        findClosestMatch(coordinates, portraits)
+                        doneLoading()
+                    }
                 }
-
-            } else {
-                Log.i("ROOM_TAG", "Database is not empty: " + portraitViewModel.count.toString())
-                findClosestMatch(coordinates)
-
-                Log.i("STREAM_TAG", (System.currentTimeMillis() - start).toString())
-                doneLoading()
             }
         }
 
@@ -82,6 +81,7 @@ class DisplayResultsFragment : Fragment() {
             )
             view?.findNavController()
                 ?.navigate(R.id.action_displayResultsFragment_to_welcomeFragment)
+            job.cancel()
         }
 
         binding.btnNo.setOnClickListener {
@@ -89,6 +89,7 @@ class DisplayResultsFragment : Fragment() {
             mainActivityViewModel.fileNameToSave = savePortraitImage()
             view?.findNavController()
                 ?.navigate(R.id.action_displayResultsFragment_to_namePortraitFragment)
+            job.cancel()
         }
 
         return binding.root
@@ -110,7 +111,6 @@ class DisplayResultsFragment : Fragment() {
         val istream = resources.openRawResource(R.raw.vfaces)
         val scanner = Scanner(istream)
         var line: String
-       // val start = System.currentTimeMillis()
         var row = 0
         while (scanner.hasNextLine()) {
             line = scanner.nextLine()
@@ -120,38 +120,32 @@ class DisplayResultsFragment : Fragment() {
             }
             row++
         }
-//        Log.i("STREAM_TAG", (System.currentTimeMillis() - start).toString())
         istream.close()
         scanner.close()
         return Multik.ndarray(array)
     }
 
-    private suspend fun doneLoading() {
-        withContext(Dispatchers.Main) {
-            binding.btnNo.visibility = View.VISIBLE
-            binding.btnYes.visibility = View.VISIBLE
-            binding.tvTitle.visibility = View.VISIBLE
-            binding.tvOutput.text = "Closest Match"
-            val file = File(context?.filesDir?.path!! + File.separatorChar + closestMatch.fileName)
-            var bitmap = BitmapFactory.decodeFile(file.absolutePath)
-            bitmap =
-                Bitmap.createScaledBitmap(bitmap!!, binding.ivOutput.width, binding.ivOutput.height, true)
-            binding.ivOutput.setImageBitmap(bitmap)
-        }
+    private fun doneLoading() {
+        binding.btnNo.visibility = View.VISIBLE
+        binding.btnYes.visibility = View.VISIBLE
+        binding.tvTitle.visibility = View.VISIBLE
+        binding.ivOutput.visibility = View.VISIBLE
+        binding.tvOutput.text = closestMatch.name
+        val file = File(context?.filesDir?.path!!, closestMatch.fileName)
+        val bitmap = BitmapFactory.decodeFile(file.path)
+        binding.ivOutput.setImageBitmap(bitmap)
     }
     private fun loadAvgFaces() : D1Array<Float> {
         val array = FloatArray(NUM_PIXELS)
         val istream = resources.openRawResource(R.raw.face_avg)
         val scanner = Scanner(istream)
         var line: String
-        //val start = System.currentTimeMillis()
         var row = 0
         while (scanner.hasNextLine()) {
             line = scanner.nextLine()
             array[row] = line.toFloat()
             row++
         }
-//        Log.i("STREAM_TAG", (System.currentTimeMillis() - start).toString())
         istream.close()
         scanner.close()
         return Multik.ndarray(array)
@@ -179,7 +173,7 @@ class DisplayResultsFragment : Fragment() {
 
     private fun stringToNDarray(arrayInString : String) : D1Array<Float> {
         val arrayAsList = arrayInString.split(',')
-        var toReturn = FloatArray(arrayAsList.size)
+        val toReturn = FloatArray(arrayAsList.size)
         for (i in 1 until arrayAsList.size) {
             toReturn[i] = arrayAsList[i].toFloat()
         }
@@ -194,8 +188,7 @@ class DisplayResultsFragment : Fragment() {
         return sqrt(total.toDouble())
     }
 
-    private fun findClosestMatch(coordinates : D1Array<Float>) {
-        val portraits : List<Portrait> = portraitViewModel.portraits.value!!
+    private fun findClosestMatch(coordinates : D1Array<Float>, portraits : List<Portrait>) {
         closestMatch = portraits[0]
         var min = norm(stringToNDarray(closestMatch.coordinates) - coordinates)
         for (i in portraits.indices) {
@@ -219,8 +212,18 @@ class DisplayResultsFragment : Fragment() {
         outStream.flush()
         outStream.close()
 
-
         return fileName
+    }
+
+    private fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observer<T>) {
+        observe(lifecycleOwner, object : Observer<T> {
+
+            override fun onChanged(value: T) {
+                observer.onChanged(value)
+                removeObserver(this)
+            }
+
+        })
     }
 
 }
