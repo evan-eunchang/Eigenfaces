@@ -1,0 +1,28 @@
+# Eigenfaces
+Experimental facial recognition app  
+
+## Abstract
+Using applied linear algebra and principal component analysis (PCA), we can approximate an image of someone's face as a matrix and define this matrix in terms of the principal components. Using PCA, we can approximate
+an image with far less data than an image, while still being able to recreate the image. In this implementation, we gathered a dataset of human faces. Then we found the eigenvectors of the covariance matrix of the dataset. 
+These eigenvectors can be used to recreate every face in the database, and mostly recreate all other human faces as well. These eigenvectors are images themselves, of a principal component of the faces in the dataset. We call
+them Eigenfaces. We can represent each face as a linear combination of these eigenfaces. By comparing the strength of each Eigenface in real human faces, we can find which faces are similar and are likely of the same person.
+I implemented an Android Application to allow users to submit faces of their choosing, and for a new face, find the closest match of the faces already submitted.
+
+## Mathematical Explanation
+First, I'll explain the mathematical basis for this app and method.  
+Even low-resolution images, for example the 112x92 grayscale images I used for this project, have an immense amount of data. The images in this project have over 10k pixels, which makes any kind of analysis on them very difficult
+and computationally expensive, not to mention the bad experience for the user. To make analysis of such objects easier, we can use principal component analysis (PCA) to find the components of greatest variation in our dataset, then represent
+each data point as a linear combination of these components at different magnitudes. One way of finding these principal components is compact Singular Value Decompostion (SVD), a process by which a matrix is decomposed into a semi-unitary matrix (U),
+a diagonal matrix of square roots of non-zero eigenvalues (S), and another semi-unitary matrix (VT). The detailed mathematical specifics of this process are not important, but the end result is that the transpose of the second semi-unitary matrix (V) is a collection
+of eigenvalues, our principal components. Compact SVD provides a useful alternative to finding the covariance matrix, a matrix that would be even larger than the one required for compact SVD. For compact SVD, we flatten each
+112x92 image into a column vector of values 0..255, which represent the grayscale brightness. Then, we build a matrix where there is a column for each image in our dataset, 400 columns for my dataset. 
+
+## Implementation Through an Android Application
+
+## Development Journey
+
+
+### Credits
+Original method written by Professor Jer-Chin Chuang and the MATH257 Staff at the University of Illinois Urbana Champaign  
+MyImageView class based on custom class created by [Hank on StackOverflow](https://stackoverflow.com/questions/12169905/zoom-and-panning-imageview-android)  
+Model was trained on data from the AT&T Cambridge Laboratory
