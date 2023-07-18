@@ -12,17 +12,15 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.i("ROOM_TAG", "MainActivity was created!")
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
+        //initialize data access object
         dao = PortraitDatabase.getInstance(application).portraitDao()
-        //val factory = PortraitViewModelFactory(dao!!)
-        //portraitViewModel = ViewModelProvider(this, factory)[PortraitViewModel::class.java]
     }
     companion object {
+        //this data access object will be used for the rest of this lifecycle by every fragment
         var dao : PortraitDao? = null
     }
 

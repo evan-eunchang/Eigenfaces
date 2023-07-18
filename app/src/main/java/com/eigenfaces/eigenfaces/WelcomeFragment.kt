@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.eigenfaces.eigenfaces.databinding.FragmentWelcomeBinding
 
-
+//home screen to display previously analyzed faces
 class WelcomeFragment : Fragment() {
     private lateinit var binding: FragmentWelcomeBinding
     private lateinit var portraitRecyclerView: RecyclerView
@@ -34,6 +34,8 @@ class WelcomeFragment : Fragment() {
 
         return binding.root
     }
+
+    //functions for recyclerView
     private fun initRecyclerView() {
         portraitRecyclerView.layoutManager = LinearLayoutManager(context)
         adapter = PortraitRecyclerViewAdapter()
